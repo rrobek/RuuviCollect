@@ -1,0 +1,32 @@
+{
+  "tags": [
+    {
+      "accelX": -0.116,
+      "accelY": -1.008,
+      "accelZ": 0.012,
+      "connectable": true,
+      "createDate": "2024-08-06T19:09:39+02:00",
+      "dataFormat": 5,
+      "favorite": true,
+      "humidity": 54.3675,
+      "humidityOffset": 0.0,
+      "id": "EC:6E:55:62:B2:36",
+      "measurementSequenceNumber": 54526,
+      "movementCounter": 72,
+      "name": "Vind",
+      "pressure": 101431.0,
+      "pressureOffset": 0.0,
+      "rssi": -72,
+      "temperature": 19.765,
+      "temperatureOffset": 0.0,
+      "txPower": 4.0,
+      "updateAt": "2024-08-27T21:51:54+02:00",
+      "voltage": 3.02
+    }
+  ],
+  "batteryLevel": 83,
+  "deviceId": "HogbyTablet",
+  "eventId": "b1e042a6-624a-4b5c-bc14-2111931a8440",
+  "time": "2024-08-27T21:51:54+02:00"
+}
+

@@ -1,0 +1,36 @@
+{
+	'FD:6D:BE:D8:A5:9B': 
+	{
+		'data_format': 5, 
+		'humidity': 56.31, 
+		'temperature': 21.73, 
+		'pressure': 1014.88, 
+		'acceleration': None, 
+		'acceleration_x': 24, 
+		'acceleration_y': 0, 
+		'acceleration_z': 1040, 
+		'tx_power': 4, 
+		'battery': 3052, 
+		'movement_counter': 227, 
+		'measurement_sequence_number': 18041, 
+		'mac': 'fd6dbed8a59b', 
+		'rssi': -52
+	}, 
+	'EC:6E:55:62:B2:36': 
+	{
+		'data_format': 5, 
+		'humidity': 55.31, 
+		'temperature': 18.34, 
+		'pressure': 1014.52, 
+		'acceleration': 1018.657940625802, 
+		'acceleration_x': -116, 
+		'acceleration_y': -1012, 
+		'acceleration_z': 8, 
+		'tx_power': 4, 
+		'battery': 3023, 
+		'movement_counter': 72, 
+		'measurement_sequence_number': 56112, 
+		'mac': 'ec6e5562b236', 
+		'rssi': -70
+	}
+}
