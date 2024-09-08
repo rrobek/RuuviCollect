@@ -1,5 +1,5 @@
 {
-	'FD:6D:BE:D8:A5:9B': 
+	'FD:XX:YY:D8:A5:9B':
 	{
 		'data_format': 5, 
 		'humidity': 56.31, 
@@ -13,10 +13,10 @@
 		'battery': 3052, 
 		'movement_counter': 227, 
 		'measurement_sequence_number': 18041, 
-		'mac': 'fd6dbed8a59b', 
+		'mac': 'fdxxyyd8a59b',
 		'rssi': -52
 	}, 
-	'EC:6E:55:62:B2:36': 
+	'EC:GG:HH:62:B2:36':
 	{
 		'data_format': 5, 
 		'humidity': 55.31, 
@@ -30,7 +30,7 @@
 		'battery': 3023, 
 		'movement_counter': 72, 
 		'measurement_sequence_number': 56112, 
-		'mac': 'ec6e5562b236', 
+		'mac': 'ecgghh62b236',
 		'rssi': -70
 	}
 }
