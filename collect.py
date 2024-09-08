@@ -5,6 +5,9 @@ import asyncio
 import logging
 import os
 import sys
+import datetime
+import requests
+import socket
 
 #print(sys.path)
 os.environ["RUUVI_BLE_ADAPTER"] = "bleak"
@@ -25,7 +28,69 @@ def my_excepthook(exctype, value, traceback):
 
 sys.excepthook = my_excepthook
 
+# #########################################
+# my globals:
 
+names_map = {}
+host_address = None
+
+# #########################################
+# my functions:
+
+def parse_names_list(filename: str):
+    global names_map
+    file = open(filename, mode = 'r', encoding = 'utf-8')
+    lines = file.readlines()
+    file.close()
+    for line in lines:
+        line = line.strip()
+        fields = line.split()
+        if len(fields) == 2:
+            names_map[fields[0].lower()] = fields[1]
+
+
+def convert_format(data: dict):
+    tags_list = []
+
+    for mac in data.keys():
+        name = names_map.get(mac.lower())
+        if name is None:
+            name = mac
+        indata = data[mac]
+        tags_list.append({
+            'id' : mac,
+            'name' : name,
+            'dataFormat' : indata['data_format'],
+            'humidity' : indata['humidity'],
+            'temperature' : indata['temperature'],
+            'temperatureOffset' : 0.0,
+            'pressure' : indata['pressure'] * 100.0,
+            'rssi' : indata['rssi'],
+            'voltage' : indata['battery'] * 0.001,
+            'accelX' : indata['acceleration_x'] * 0.001,
+            'accelY': indata['acceleration_y'] * 0.001,
+            'accelZ': indata['acceleration_z'] * 0.001
+        })
+
+    output_data = { 'tags': tags_list,
+                    'deviceId': socket.gethostname(),
+                    'time': datetime.datetime.now().astimezone().isoformat()
+    }
+    return output_data
+
+
+def send_output(output:dict):
+    x = requests.post(host_address, json= output)
+    log.info(f"Request status: {x.status_code}; text: {x.text}")
+
+
+def process_data(data, arguments: argparse.Namespace):
+    log.info(data)
+    output = convert_format(data)
+    if host_address is not None:
+        send_output(output)
+
+# main routines:
 async def _async_main_handle(arguments: argparse.Namespace):
     if arguments.mac_address:
         data = await RuuviTagSensor.get_data_for_sensors_async(
@@ -35,8 +100,8 @@ async def _async_main_handle(arguments: argparse.Namespace):
     elif arguments.find_action:
         await RuuviTagSensor.find_ruuvitags_async(arguments.bt_device)
     elif arguments.latest_action:
-        data = await RuuviTagSensor.get_data_for_sensors_async(bt_device=arguments.bt_device)
-        log.info(data)
+        data = await RuuviTagSensor.get_data_for_sensors_async(bt_device=arguments.bt_device, search_duratio_sec=10)
+        process_data(data, arguments)
     elif arguments.stream_action:
         async for mac, sensor_data in RuuviTagSensor.get_data_async(bt_device=arguments.bt_device):
             log.info("%s - %s", mac, sensor_data)
@@ -49,8 +114,8 @@ def _sync_main_handle(arguments: argparse.Namespace):
     elif arguments.find_action:
         RuuviTagSensor.find_ruuvitags(arguments.bt_device)
     elif arguments.latest_action:
-        data = RuuviTagSensor.get_data_for_sensors(bt_device=arguments.bt_device)
-        log.info(data)
+        data = RuuviTagSensor.get_data_for_sensors(bt_device=arguments.bt_device, search_duratio_sec=10)
+        process_data(data, arguments)
     elif arguments.stream_action:
         RuuviTagSensor.get_data(lambda x: log.info("%s - %s", x[0], x[1]), bt_device=arguments.bt_device)
 
@@ -66,9 +131,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "-s", "--stream", action="store_true", dest="stream_action", help="Stream broadcasts from all RuuviTags"
     )
+    parser.add_argument("-o", "--host", dest="host_address", help="Set host address for HTTP POST of data")
+    parser.add_argument("-n", "--names", dest="name_list", help="Set list of sensor names (tab-separated: mac -> name)")
     parser.add_argument("--version", action="version", version=f"%(prog)s {ruuvitag_sensor.__version__}")
     parser.add_argument("--debug", action="store_true", dest="debug_action", help="Enable debug logging")
     args = parser.parse_args()
+
+    if args.name_list:
+        parse_names_list(args.name_list)
+
+    if args.host_address:
+        host_address = args.host_address
 
     if args.debug_action:
         log.setLevel(logging.DEBUG)

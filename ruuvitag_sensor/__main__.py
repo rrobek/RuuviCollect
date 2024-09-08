@@ -1,13 +1,7 @@
-#! /usr/bin/python3
-
 import argparse
 import asyncio
 import logging
-import os
 import sys
-
-#print(sys.path)
-os.environ["RUUVI_BLE_ADAPTER"] = "bleak"
 
 import ruuvitag_sensor
 from ruuvitag_sensor.adapters import is_async_adapter
@@ -15,6 +9,7 @@ from ruuvitag_sensor.log import log
 from ruuvitag_sensor.ruuvi import RuuviTagSensor
 
 ruuvitag_sensor.log.enable_console()
+
 
 def my_excepthook(exctype, value, traceback):
     sys.__excepthook__(exctype, value, traceback)
@@ -83,5 +78,3 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_until_complete(_async_main_handle(args))
     else:
         _sync_main_handle(args)
-
-
