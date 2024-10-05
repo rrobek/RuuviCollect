@@ -84,11 +84,20 @@ def send_output(output:dict):
     log.info(f"Request status: {x.status_code}; text: {x.text}")
 
 
-def process_data(data, arguments: argparse.Namespace):
+def write_number_file(filename: str, number: int):
+    file = open(filename, mode = 'w', encoding = 'utf-8')
+    file.write(f"{number}\n")
+    file.close()
+
+
+def process_data(data: dict, arguments: argparse.Namespace):
     log.info(data)
     output = convert_format(data)
     if host_address is not None:
         send_output(output)
+    if arguments.number_file is not None:
+        write_number_file(arguments.number_file, len(data.keys()))
+
 
 # main routines:
 async def _async_main_handle(arguments: argparse.Namespace):
@@ -133,6 +142,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-o", "--host", dest="host_address", help="Set host address for HTTP POST of data")
     parser.add_argument("-n", "--names", dest="name_list", help="Set list of sensor names (tab-separated: mac -> name)")
+    parser.add_argument("-w", "--write-number", dest="number_file", help="Write number of found sensors into the given file")
     parser.add_argument("--version", action="version", version=f"%(prog)s {ruuvitag_sensor.__version__}")
     parser.add_argument("--debug", action="store_true", dest="debug_action", help="Enable debug logging")
     args = parser.parse_args()
