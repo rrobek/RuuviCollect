@@ -9,6 +9,8 @@ import datetime
 import requests
 import socket
 
+from bleak.exc import BleakDBusError
+
 #print(sys.path)
 os.environ["RUUVI_BLE_ADAPTER"] = "bleak"
 
@@ -162,9 +164,14 @@ if __name__ == "__main__":
         parser.print_usage()
         sys.exit(0)
 
-    if is_async_adapter(ruuvitag_sensor.ruuvi.ble):
-        asyncio.get_event_loop().run_until_complete(_async_main_handle(args))
-    else:
-        _sync_main_handle(args)
+    try:
+        if is_async_adapter(ruuvitag_sensor.ruuvi.ble):
+            asyncio.get_event_loop().run_until_complete(_async_main_handle(args))
+        else:
+            _sync_main_handle(args)
+    except BleakDBusError:
+        # if a Bluetooth exception occurred we will not have received any sensor data.
+        if args.number_file is not None:
+            write_number_file(args.number_file, 0)
 
 
