@@ -169,8 +169,9 @@ if __name__ == "__main__":
             asyncio.get_event_loop().run_until_complete(_async_main_handle(args))
         else:
             _sync_main_handle(args)
-    except BleakDBusError:
+    except BleakDBusError as e:
         # if a Bluetooth exception occurred we will not have received any sensor data.
+        log.critical("Bluetooth exception: %s", e)
         if args.number_file is not None:
             write_number_file(args.number_file, 0)
 
