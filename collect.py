@@ -164,6 +164,8 @@ if __name__ == "__main__":
         parser.print_usage()
         sys.exit(0)
 
+    dt = datetime.datetime.now()
+    print(dt.strftime('%Y-%m-%d, %H:%M:%S'))
     if args.number_file is not None:
         write_number_file(args.number_file, 0)
     try:
