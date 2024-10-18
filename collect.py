@@ -164,6 +164,8 @@ if __name__ == "__main__":
         parser.print_usage()
         sys.exit(0)
 
+    if args.number_file is not None:
+        write_number_file(args.number_file, 0)
     try:
         if is_async_adapter(ruuvitag_sensor.ruuvi.ble):
             asyncio.get_event_loop().run_until_complete(_async_main_handle(args))
